@@ -1,0 +1,6 @@
+.idea
+venv
+alsodev/media/*
+alsodev/products/migrations/*
+alsodev/products/logs/*
+__pycache__/

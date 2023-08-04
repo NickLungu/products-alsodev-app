@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+{% load custom_filters %}
+{% block title %}List of products{% endblock %}
+{% block header %}
+	<a class="addproduct" href="{% url 'add_product' %}"><button class="add_product">Add a new product</button></a>
+{% endblock %}
+{% block main %}
+	{% for product in product_list %}
+		<div class="product">
+			<!-- Product details -->
+			<div class="product__name">
+				<div>
+					{{ product.slug }}
+				</div>
+			</div>
+			<div class="product__details">
+				<p>Price: {{ product.price }}.</p>
+				<p>Created date: {{ product.create_date }}</p>
+				<p>Author: {{ product.author }}</p>
+				<h2>Features:</h2>
+				<ul>
+					{% for feature in product.feature.all %}
+						<li>{{ feature.key }}:{{ feature.value }}</li>
+					{% empty %}
+						<li>No features available.</li>
+					{% endfor %}
+				</ul>
+				<a class="updateproduct" href="{% url 'update_product' product_id=product.pk %}"><button class="update_product">Update this product</button></a>
+			</div>
+			<!-- Image Carousel -->
+			<div id="carousel-{{ product.pk }}" class="carousel slide" data-ride="carousel">
+				<div class="carousel-inner">
+					{% if product.images.exists %}
+						{% for image in product.images.all %}
+							<div class="carousel-item{% if forloop.first %} active{% endif %}">
+								<img src="{{ image.image.url }}" class="d-block w-100" style="max-height:30vh; width:100%" alt="Product Image">
+							</div>
+						{% endfor %}
+					{% endif %}
+				</div>
+				<a class="carousel-control-prev" href="#carousel-{{ product.pk }}" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="carousel-control-next" href="#carousel-{{ product.pk }}" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+		</div>
+	{% endfor %}
+	<nav>
+		<ul>
+			{% for p in page_obj.paginator.page_range %}
+				<li>
+					<a href="/?page={{ p }}">{{ p }}</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</nav>
+{% endblock %}
+<script>
+	$(document).ready(function() {
+		{% for product in product_list %}
+			$('#carousel-{{ product.pk }}').carousel();
+		{% endfor %}
+	});
+</script>

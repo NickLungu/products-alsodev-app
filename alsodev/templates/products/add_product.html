@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Adding a new product{% endblock %}
+{% block header %}
+    <h2>Please fill in all fields</h2>
+{% endblock %}
+{% block main %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <h3>{{ message }}</h3>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="form_add_product">
+            <form id="add-product-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-box">
+                    Name
+                    {{ form.slug }}
+                </div>
+                <div class="input-box">
+                    Price
+                    {{ form.price }}
+                </div>
+                {{ form.images }}
+                {{ formset.management_form }}
+                {% for feature_form in formset %}
+
+                    <div class="input-feature" id="input-feature{{forloop.counter}}">
+                        <h5>feature {{ forloop.counter }}</h5>
+                        <div class="input-box">
+                            Key
+                            {{ feature_form.key }}
+                        </div>
+                        <div class="input-box">
+                            Value
+                            {{ feature_form.value }}
+                        </div>
+                        <button class="input-feature__button" type="button" onclick="showNextFeatureField(this)">+</button>
+                    </div>
+                {% endfor %}
+
+
+                <div class="submit-btn">
+                    <input type="submit" value="Add Product">
+                </div>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

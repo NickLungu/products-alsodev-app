@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Update the product{% endblock %}
+{% block header %}
+    <h2>Update the product</h2>
+{% endblock %}
+{% block main %}
+    <div class="form_update_product">
+        <form id="update-product-form" method="post" action="{% url 'update_product' product_id=product.id %}" enctype="multipart/form-data" data-product-id="{{ product.id }}" data-csrf-token="{{ csrf_token }}">
+            {% csrf_token %}
+            <div class="input-box">
+                Name
+                {{ form.slug }}
+            </div>
+            <div class="input-box">
+                Price
+                {{ form.price }}
+            </div>
+            <!-- Render associated images -->
+            <h5>current images:</h5>
+            <div class="input-image">
+                {% for image in product.images.all %}
+                    <div class="image-box" id="image-{{ image.id }}">
+                        <img style="max-height:100px;" src="{{ image.image.url }}" alt="Product Image">
+                        <button class="delete-image-btn" data-image-id="{{ image.id }}" data-csrf-token="{{ csrf_token }}">Delete</button>
+                    </div>
+                {% endfor %}
+                <div class="image-box" id="image-preview"></div>
+            </div>
+
+            <div class="input-image">
+                {{ form.images }}
+            </div>
+            {{ formset.management_form }}
+            {% for feature_form in formset %}
+                <div class="input-feature" id="input-feature{{forloop.counter}}">
+                    <h5>feature {{ forloop.counter }}</h5>
+                    <div class="input-box">
+                        Key
+                        {{ feature_form.key }}
+                    </div>
+                    <div class="input-box">
+                        Value
+                        {{ feature_form.value }}
+                    </div>
+                    <button class="input-feature__button" type="button" onclick="showNextFeatureField(this)">+</button>
+                </div>
+            {% endfor %}
+            <div class="submit-btn">
+                <input type="submit" value="update Product">
+            </div>
+        </form>
+    </div>
+{% endblock %}
